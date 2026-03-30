@@ -33,8 +33,8 @@ class Configurator:
         }
         with open(CONFIG_PATH, 'w') as configfile:
             config.write(configfile)
-        print(f'Был создан файл настроек {CONFIG_PATH}. Внесите в него свои данные и запустите приложение снова')
-        
+        raise ConfigNotFoundException
+            
     def read_settings(self):
         if not os.path.exists(CONFIG_PATH):
             self.create_empty_config()
@@ -44,3 +44,6 @@ class Configurator:
         config.read(CONFIG_PATH)
         
         return SettingsModel(config)
+    
+class ConfigNotFoundException(Exception):
+    pass
