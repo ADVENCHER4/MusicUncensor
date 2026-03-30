@@ -27,6 +27,10 @@ class DownloadManager():
         downloaded_songs = [file.split('.')[0] for file in os.listdir(self.config.folder_path) if os.path.isfile(os.path.join(self.config.folder_path, file))]
         self.songs_list = [song for song in self.songs_list if song.get_file_name() not in downloaded_songs]
         
+    def __put_songs_list_to_file(self):
+        with open(FILE, 'w', -1, 'utf-8') as file:
+            file.write('\n'.join([song.get_song_str() for song in self.songs_list]))
+        
     def get_songs_list(self):
         liked_songs = self.sp.get_all_liked_tracks()
             
@@ -35,8 +39,7 @@ class DownloadManager():
         print_list([song.get_song_str() for song in self.songs_list])       
                 
         print(f'Список треков можно изменить в файле ({FILE})')
-        with open(FILE, 'w', -1, 'utf-8') as file:
-            file.write('\n'.join([song.get_song_str() for song in self.songs_list]))
+        self.__put_songs_list_to_file()
             
     def parse_songs_file(self):
         with open(FILE, 'r', -1, 'utf-8') as file:
@@ -44,9 +47,11 @@ class DownloadManager():
                     song = song.removesuffix('\n')
                     [name, second] = song.split('-')
                     name = name.strip()
-                    artists = second.strip().split('(')[0].split(',')
-                    album = second.strip().split('(')[1][:-1]
+                    artists = [artist.strip() for artist in second.strip().split('(')[0].split(',')]
+                    album = second.strip().split('(')[1][:-1].strip()
                     self.songs_list.append(SongModel(name, artists, album))
+        self.__remove_downloaded_tracks()
+        self.__put_songs_list_to_file()
                     
     def download_songs(self):
         error_downloads = []
@@ -55,17 +60,17 @@ class DownloadManager():
             if self.downloader.download_song(song):
                 success_downloads += 1
                 print(f'Удалось скачать {song.title}')
-                self.logger.warning(f'Error downloading song {song.title}')
+                self.logger.info(f'Successfully downloaded song {song.title}')
             else:
                 error_downloads.append(song)
                 print(f'Не удалось скачать {song.title}')
-                self.logger.warning(f'Successfully downloaded song {song.title}')
+                self.logger.warning(f'Error downloading song {song.title}')
             time.sleep(SLEEP_TIME)
             
         self.logger.info(f'Successfully downloaded {success_downloads}')
-        print(f'Загрузка завершена. Успешно: {success_downloads}, неуспешно: {len(error_downloads)} ({(success_downloads / len(error_downloads) * 100)}%)')
-        if len(self.error_downloads):
-            songs = [song.get_song_str() for song in self.error_downloads]
+        print(f'Загрузка завершена. Успешно: {success_downloads}, неуспешно: {len(error_downloads)} ({(success_downloads / len(self.songs_list) * 100)}%)')
+        if len(error_downloads):
+            songs = [song.get_song_str() for song in error_downloads]
             print('Не удалось скачать:')
             print_list(songs)
             print(f'Этот список хранится в файле ({FILE})')

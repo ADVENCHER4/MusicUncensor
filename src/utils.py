@@ -8,6 +8,7 @@ HEADERS = {
 }
 FILE = './songs.txt'
 CONFIG_PATH = './config.cfg'
+RETRIES_COUNT = 3
 
 def is_cyrillic(text, alphabet=set('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')):
     return not alphabet.isdisjoint(text.lower())
