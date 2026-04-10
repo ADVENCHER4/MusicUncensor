@@ -61,6 +61,7 @@ python -m pip install -r requirements.txt
 
    * **App name** — любое название
    * **App description** — описание (можно любое)
+   * **Redirect URIs** — https://localhost:8888/callback
 
 ---
 
@@ -70,16 +71,6 @@ python -m pip install -r requirements.txt
 
 * `Client ID`
 * `Client Secret`
-
----
-
-### 3. Настройка Redirect URI
-
-В настройках приложения добавь:
-
-```text
-https://127.0.0.1/callback
-```
 
 ---
 
@@ -105,5 +96,5 @@ FOLDER_PATH=./songs
 ## ▶️ Запуск
 
 ```bash
-python main.py
+python ./src/main.py
 ```
