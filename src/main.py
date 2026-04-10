@@ -2,6 +2,7 @@ import logging
 
 from configurator import ConfigNotFoundException
 from download_manager import DownloadManager
+from models.download_mode_model import DownloadMode
 from utils import CONFIG_PATH
 
 
@@ -24,7 +25,13 @@ def main():
     while True:
         answer = input(f'Что вы хотите сделать? (1 - получить треки; 2 - скачать треки; 3 - обновить плейлист избранного; 4 - выйти) ')
         if answer == '1':
-            manager.get_songs_list()
+            mode_answer = input(f'Какой формат вы хотите? (1 - по умолчанию; 2 - для sldl) ')
+            if mode_answer == 2:
+                mode = DownloadMode.SLDL
+            else: 
+                mode = DownloadMode.DEFAULT
+
+            manager.get_songs_list(mode)
             return
         elif answer == '2':
             manager.parse_songs_file()

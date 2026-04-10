@@ -7,6 +7,7 @@ HEADERS = {
                   "Chrome/120.0.0.0 Safari/537.36"
 }
 FILE = './songs.txt'
+BANLIST_FILE = './banlist.txt'
 CONFIG_PATH = './config.cfg'
 RETRIES_COUNT = 3
 
