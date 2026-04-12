@@ -9,12 +9,12 @@ from utils import CONFIG_PATH
 def main():
     logging.basicConfig(
         level=logging.INFO,
-        filename="app.log",
-        encoding="utf-8",
-        filemode="a",
-        format="{asctime} {levelname} - {message}",
-        style="{",
-        datefmt="%Y-%m-%d %H:%M"
+        filename='app.log',
+        encoding='utf-8',
+        filemode='a',
+        format='{asctime} {levelname} - {message}',
+        style='{',
+        datefmt='%Y-%m-%d %H:%M'
     )
     try:
         manager = DownloadManager()
