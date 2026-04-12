@@ -5,6 +5,9 @@ class SongModel:
         self.title = title
         self.artist = artist
         self.album = album
+        
+    def __eq__(self, value):
+        return self.title == value.title and self.album == value.album and sorted(self.artist) == sorted(value.artist)
 
     def get_artist_str(self):
         return ', '.join(self.artist)

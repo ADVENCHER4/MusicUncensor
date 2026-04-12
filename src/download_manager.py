@@ -1,9 +1,10 @@
 import logging
 from configurator import Configurator
-from donwloader import Downloader
+from downloader import Downloader
 import os
 from models.download_mode_model import DownloadMode
 from models.song_model import SongModel
+from tag_service import TagService
 from spotify_client import SpotifyClient
 import time
 from utils import BANLIST_FILE, FILE, SLEEP_TIME, is_cyrillic, print_list
@@ -33,9 +34,23 @@ class DownloadManager():
     def __remove_downloaded_tracks(self):
         if not os.path.exists(self.config.folder_path):
             return
-        
-        downloaded_songs = [file.split('.')[0] for file in os.listdir(self.config.folder_path) if os.path.isfile(os.path.join(self.config.folder_path, file))]
-        self.songs_list = [song for song in self.songs_list if song.get_file_name() not in downloaded_songs]
+
+        downloaded_songs = []
+        for file in os.listdir(self.config.folder_path):
+            path = os.path.join(self.config.folder_path, file)
+            if os.path.isfile(path):
+                downloaded_songs.append(TagService.read(path))
+
+        new_song_list = []
+        for song in self.songs_list:
+            should_add = True
+            for downloaded_song in downloaded_songs:
+                if song == downloaded_song:
+                    should_add = False
+            
+            if should_add:
+                new_song_list.append(song)
+        self.songs_list = new_song_list
         
     def __put_songs_list_to_file(self, mode):
         with open(FILE, 'w', -1, 'utf-8') as file:
