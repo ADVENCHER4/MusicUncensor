@@ -1,5 +1,6 @@
 import logging
 
+from config_generator import ConfigGenerator
 from configurator import ConfigNotFoundException
 from download_manager import DownloadManager
 from models.download_mode_model import DownloadMode
@@ -26,8 +27,10 @@ def main():
         answer = input(f'Что вы хотите сделать? (1 - получить треки; 2 - скачать треки; 3 - обновить плейлист избранного; 4 - выйти) ')
         if answer == '1':
             mode_answer = input(f'Какой формат вы хотите? (1 - по умолчанию; 2 - для sldl) ')
-            if mode_answer == 2:
+            if mode_answer == '2':
                 mode = DownloadMode.SLDL
+                if ConfigGenerator.create_sldl_config():
+                    print('Создан конфиг файл для sldl')
             else: 
                 mode = DownloadMode.DEFAULT
 

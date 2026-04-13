@@ -4,6 +4,7 @@ config.cfg
 todo.txt
 songs.txt
 banlist.txt
+sldl.conf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

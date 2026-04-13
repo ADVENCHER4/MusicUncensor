@@ -98,3 +98,13 @@ FOLDER_PATH=./songs
 ```bash
 python ./src/main.py
 ```
+
+---
+
+## ▶️ Запуск sldl
+
+При необходимости скачивания музыки через [sldl](https://github.com/fiso64/sldl) перейдите в папку с программой и пропишите в консоли
+
+```bash
+sldl.exe --profile wishlist
+```

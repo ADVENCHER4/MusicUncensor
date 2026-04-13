@@ -16,7 +16,7 @@ class SongModel:
         return f'{self.title} - {self.get_artist_str()} ({self.album})'
     
     def get_sldl_song_str(self):
-        return f'{self.get_artist_str()} - {self.title}'
+        return f'"{self.get_artist_str()} - {self.title}"'
     
     def get_search_str(self):
         return f'{self.title} - {self.artist[0]}'
