@@ -26,7 +26,7 @@ class Configurator:
             'CLIENT_ID': '',
             'CLIENT_SECRET': '',
             'REDIRECT_URI': 'https://127.0.0.1/callback',
-            'SCOPE': 'user-library-read'
+            'SCOPE': 'user-library-read user-library-modify playlist-modify-private playlist-modify-public'
         }
         config['OS'] = {
             'FOLDER_PATH': './songs'

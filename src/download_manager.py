@@ -4,6 +4,7 @@ from downloader import Downloader
 import os
 from models.download_mode_model import DownloadMode
 from models.song_model import SongModel
+from models.to_remove_song_model import ToRemoveSongModel
 from tag_service import TagService
 from spotify_client import SpotifyClient
 import time
@@ -35,11 +36,7 @@ class DownloadManager():
         if not os.path.exists(self.config.folder_path):
             return
 
-        downloaded_songs = []
-        for file in os.listdir(self.config.folder_path):
-            path = os.path.join(self.config.folder_path, file)
-            if os.path.isfile(path):
-                downloaded_songs.append(TagService.read(path))
+        downloaded_songs = self.__get_local_songs()
 
         new_song_list = []
         for song in self.songs_list:
@@ -58,9 +55,18 @@ class DownloadManager():
                 file.write('\n'.join([song.get_song_str() for song in self.songs_list]))
             elif mode == DownloadMode.SLDL:
                 file.write('\n'.join([song.get_sldl_song_str() for song in self.songs_list]))
+                
+    def __get_local_songs(self):
+        downloaded_songs = []
+        for file in os.listdir(self.config.folder_path):
+            path = os.path.join(self.config.folder_path, file)
+            if os.path.isfile(path):
+                downloaded_songs.append(TagService.read(path))
+        
+        return downloaded_songs
         
     def get_songs_list(self, mode):
-        liked_songs = self.sp.get_all_liked_tracks()
+        liked_songs = [SongModel.to_model(song) for song in self.sp.get_all_liked_tracks()]
             
         self.__filter_songs(liked_songs)        
         self.__remove_downloaded_tracks()
@@ -105,5 +111,28 @@ class DownloadManager():
             with open(FILE, 'w', -1, 'utf-8') as file:
                     file.write('\n'.join(songs))
 
-       
-    # todo: remove songs from favorite
+    def remove_local_songs_from_favorite(self):
+        if not os.path.exists(self.config.folder_path):
+            return
+        downloaded_songs = self.__get_local_songs()
+        full_songs_list = [ToRemoveSongModel.to_model(song) for song in self.sp.get_all_liked_tracks()]
+        remove_songs_list = []
+        for song in full_songs_list:
+            should_add = False
+            for downloaded_song in downloaded_songs:
+                if song == downloaded_song:
+                    should_add = True
+            
+            if should_add:
+                remove_songs_list.append(song.id)
+                
+        try: 
+            for i in range(0, len(remove_songs_list), 40):
+                self.sp.remove_tracks_from_liked(remove_songs_list[i:i+40])
+            print('Локальные треки успешно удалены из избранных')
+        except Exception as e:
+            print('Не удалось удалить локальные треки из избранных')
+            self.logger.error(f'Error removing tracks from favorite')
+            self.logger.exception(e)
+            
+        

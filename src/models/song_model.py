@@ -23,3 +23,7 @@ class SongModel:
     
     def get_file_name(self):
         return re.sub(r'[\\/:*?"<>|]', ' ', ' '.join(self.title.replace('-', ' ').split()))
+    
+    @staticmethod
+    def to_model(song):
+        return SongModel(song['name'], [artist['name'] for artist in song['artists']], song['album']['name'])

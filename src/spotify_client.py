@@ -25,6 +25,8 @@ class SpotifyClient:
     def get_all_liked_tracks(self):
         songs = []
         for item in self.__fetch_liked_tracks():
-            song = item['track']
-            songs.append(SongModel(song['name'], [artist['name'] for artist in song['artists']], song['album']['name']))
+            songs.append(item['track'])
         return songs
+    
+    def remove_tracks_from_liked(self, tracks_to_remove):
+        self.sp.current_user_saved_tracks_delete(tracks=tracks_to_remove)

@@ -40,7 +40,7 @@ def main():
             manager.parse_songs_file()
             manager.download_songs()
         elif answer == '3':
-            pass
+            manager.remove_local_songs_from_favorite()
         elif answer == '4':
             return
         else:
