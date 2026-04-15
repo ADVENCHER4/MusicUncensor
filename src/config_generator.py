@@ -4,9 +4,9 @@ from configurator import Configurator
 
 
 class ConfigGenerator():
-    config = Configurator().settings
     @staticmethod
     def create_sldl_config():
+        config = Configurator().settings
         path='sldl.conf'
         if os.path.exists(path):
             return False
@@ -18,7 +18,7 @@ password =
 input = ./songs.txt
 input-type = list
 pref-format = flac
-path = {ConfigGenerator.config.folder_path}
+path = {config.folder_path}
 """
 
         with open(path, 'w', encoding='utf-8') as f:

@@ -1,7 +1,7 @@
 import configparser
 import os
 
-from settings_model import SettingsModel
+from models.settings_model import SettingsModel
 from utils import CONFIG_PATH
 
 class Configurator:
@@ -21,7 +21,9 @@ class Configurator:
         self._initialized = True
     
     def create_empty_config(self):
-        config = configparser.ConfigParser()
+        config = configparser.ConfigParser(allow_no_value=True)
+        config.set('DEFAULT', '; spotify or yandex')
+        config.set('DEFAULT', 'MODE', 'spotify')
         config['SPOTIFY'] = {
             'CLIENT_ID': '',
             'CLIENT_SECRET': '',

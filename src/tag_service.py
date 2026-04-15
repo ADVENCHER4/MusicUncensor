@@ -9,7 +9,6 @@ from mutagen.mp4 import MP4, MP4Cover
 
 from models.song_model import SongModel
 class TagService:
-    config = Configurator().settings
     logger = logging.getLogger(__name__)
 
     @staticmethod
@@ -49,7 +48,8 @@ class TagService:
 
     @staticmethod
     def write(song):
-        file_path = f'{TagService.config.folder_path}/{song.get_file_name()}.mp3'
+        config = Configurator().settings
+        file_path = f'{config.folder_path}/{song.get_file_name()}.mp3'
         audio = File(file_path)
 
         if audio is None:
@@ -70,10 +70,10 @@ class TagService:
             audio['\xa9nam'] = [song.title]
             audio['\xa9ART'] = song.artists
             audio['\xa9alb'] = [song.album]
-            with open(f'{TagService.config.folder_path}/cover.jpg', 'rb') as img:
+            with open(f'{config.folder_path}/cover.jpg', 'rb') as img:
                 cover = MP4Cover(img.read(), imageformat=MP4Cover.FORMAT_JPEG)
             audio['covr'] = [cover]
-            os.remove(f'{TagService.config.folder_path}/cover.jpg')
+            os.remove(f'{config.folder_path}/cover.jpg')
 
         elif name == 'FLAC':
             audio = FLAC(file_path)
