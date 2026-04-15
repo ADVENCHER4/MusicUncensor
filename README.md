@@ -46,7 +46,7 @@ python -m pip install -r requirements.txt
 
 ---
 
-## ⚙️ Настройка Spotify API
+## ⚙️ Настройка Spotify API (при работе со Spotify)
 
 Для работы приложения необходимо создать приложение в Spotify for Developers. (**Не будет работать без "ускорителя интернета"**)
 
@@ -81,6 +81,10 @@ python -m pip install -r requirements.txt
 Заполни его:
 
 ```ini
+[DEFAULT]
+; spotify or yandex
+mode = yandex
+
 [SPOTIFY]
 CLIENT_ID=your_client_id
 CLIENT_SECRET=your_client_secret
@@ -90,6 +94,12 @@ SCOPE=user-library-read
 [OS]
 FOLDER_PATH=./songs
 ```
+
+---
+
+## ⚙️ Настройка Yandex Music API (при работе с Яндекс музыкой)
+
+Для работы приложения не нужны дополнительные настройки, конфигурация происходит при запуске приложения
 
 ---
 
