@@ -2,7 +2,7 @@ import logging
 
 from config_generator import ConfigGenerator
 from configurator import ConfigNotFoundException
-from download_manager import DownloadManager
+from download_manager import DownloadManager, ModeNotSetException
 from models.download_mode_model import DownloadMode
 from utils import CONFIG_PATH
 
@@ -21,6 +21,9 @@ def main():
         manager = DownloadManager()
     except ConfigNotFoundException:
         print(f'Был создан файл настроек {CONFIG_PATH}. Внесите в него свои данные и запустите приложение снова')
+        return
+    except ModeNotSetException:
+        print(f'В файле настроет {CONFIG_PATH} не указан сервис для получения треков')
         return
 
     while True:

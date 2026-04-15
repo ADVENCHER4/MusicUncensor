@@ -9,14 +9,20 @@ from tag_service import TagService
 from spotify_client import SpotifyClient
 import time
 from utils import BANLIST_FILE, FILE, SLEEP_TIME, is_cyrillic, print_list
+from yandex_client import YandexClient
 
 class DownloadManager():
     def __init__(self):
-        self.sp = SpotifyClient()
         self.downloader = Downloader()
         self.songs_list = []
         self.config = Configurator().settings
         self.logger = logging.getLogger(__name__);
+        if self.config.mode == 'spotify':
+            self.client = SpotifyClient()
+        elif self.config.mode == 'yandex':
+            self.client = YandexClient()
+        else:
+            raise ModeNotSetException
     
     def __filter_songs(self, liked_songs):
         if not os.path.exists(BANLIST_FILE):
@@ -66,7 +72,7 @@ class DownloadManager():
         return downloaded_songs
         
     def get_songs_list(self, mode):
-        liked_songs = [SongModel.to_model(song) for song in self.sp.get_all_liked_tracks()]
+        liked_songs = [SongModel.to_model(song) for song in self.client.get_all_liked_tracks()]
             
         self.__filter_songs(liked_songs)        
         self.__remove_downloaded_tracks()
@@ -115,7 +121,7 @@ class DownloadManager():
         if not os.path.exists(self.config.folder_path):
             return
         downloaded_songs = self.__get_local_songs()
-        full_songs_list = [ToRemoveSongModel.to_model(song) for song in self.sp.get_all_liked_tracks()]
+        full_songs_list = [ToRemoveSongModel.to_model(song) for song in self.client.get_all_liked_tracks()]
         remove_songs_list = []
         for song in full_songs_list:
             should_add = False
@@ -128,11 +134,12 @@ class DownloadManager():
                 
         try: 
             for i in range(0, len(remove_songs_list), 40):
-                self.sp.remove_tracks_from_liked(remove_songs_list[i:i+40])
+                self.client.remove_tracks_from_liked(remove_songs_list[i:i+40])
             print('Локальные треки успешно удалены из избранных')
         except Exception as e:
             print('Не удалось удалить локальные треки из избранных')
             self.logger.error(f'Error removing tracks from favorite')
             self.logger.exception(e)
             
-        
+class ModeNotSetException(Exception):
+    pass

@@ -2,8 +2,6 @@ from configurator import Configurator
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-from models.song_model import SongModel
-
 class SpotifyClient:
     def __init__(self):
         config = Configurator().settings
